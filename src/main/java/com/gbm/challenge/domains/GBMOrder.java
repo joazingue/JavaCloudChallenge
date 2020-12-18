@@ -8,7 +8,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
 @Entity
-public class Order {
+public class GBMOrder {
 
 	@Id
 	@GeneratedValue
@@ -19,7 +19,7 @@ public class Order {
 	private Long TotalShares;
 	private Double SharePrice;
 	
-	public Order() {
+	public GBMOrder() {
 	}
 	public Long getIdOrder() {
 		return idOrder;
@@ -53,5 +53,10 @@ public class Order {
 	}
 	public void setSharePrice(Double sharePrice) {
 		SharePrice = sharePrice;
+	}
+	@Override
+	public String toString() {
+		return "GBMOrder [idOrder=" + idOrder + ", timestamp=" + timestamp + ", Operation=" + Operation
+				+ ", IssuerName=" + IssuerName + ", TotalShares=" + TotalShares + ", SharePrice=" + SharePrice + "]";
 	}
 }

@@ -17,7 +17,7 @@ public class InvestmentAccount {
 	@GeneratedValue
 	private Long idInvestmentAccount;
 	private Double cash;
-	@OneToMany(mappedBy = "issuer", fetch = FetchType.LAZY, orphanRemoval = true)
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Issuer> issuers = new ArrayList<>();
 	
 	public InvestmentAccount() {
@@ -41,5 +41,10 @@ public class InvestmentAccount {
 	public List<Issuer> removeIssuer(Issuer issu){
 		issuers.remove(issu.getIdIssuer());
 		return issuers;
+	}
+	@Override
+	public String toString() {
+		return "InvestmentAccount [idInvestmentAccount=" + idInvestmentAccount + ", cash=" + cash + ", issuers="
+				+ issuers + "]";
 	}
 }
