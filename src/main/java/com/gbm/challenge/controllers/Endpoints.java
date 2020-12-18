@@ -36,6 +36,18 @@ public class Endpoints {
 	public ResponseEntity<Stock> SendOrder(@PathVariable Long id, @RequestBody GBMOrder gbmOrder){
 		System.out.println(id);
 		System.out.println(gbmOrder);
+		// validator.addrule(market)
+		// validator.addrule(balance)
+		// validator.addrule(stocks)
+		// validator.addrule(duplication)
+		// validator.validate(gbmOrder)
+		// validator[0] ok
+		// validator[1] ok
+		// validator[2] ok
+		// validator[3] ok
+		// if one not ok, then return respective invalidation
+		// 
+		
 		Stock s = new Stock();
 		return new ResponseEntity<Stock>(s, HttpStatus.OK);
 	}

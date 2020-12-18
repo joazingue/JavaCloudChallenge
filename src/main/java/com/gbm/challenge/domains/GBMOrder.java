@@ -13,7 +13,7 @@ public class GBMOrder {
 	@Id
 	@GeneratedValue
 	private Long idOrder;
-	private Timestamp timestamp;
+	private Long timestamp;
 	private String Operation;
 	private String IssuerName;
 	private Long TotalShares;
@@ -24,10 +24,10 @@ public class GBMOrder {
 	public Long getIdOrder() {
 		return idOrder;
 	}
-	public Timestamp getTimestamp() {
+	public Long getTimestamp() {
 		return timestamp;
 	}
-	public void setTimestamp(Timestamp timestamp) {
+	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
 	public String getOperation() {
