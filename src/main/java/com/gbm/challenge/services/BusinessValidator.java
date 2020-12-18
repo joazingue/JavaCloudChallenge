@@ -3,12 +3,15 @@ package com.gbm.challenge.services;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.gbm.challenge.domains.GBMOrder;
 import com.gbm.challenge.domains.Stock;
 import com.gbm.challenge.services.rules.IBusinessRules;
 import com.gbm.challenge.services.rules.Validation;
 
 // Can implement Abstract factory
+@Service
 public class BusinessValidator {
 
 	private Stock stock;
@@ -25,6 +28,9 @@ public class BusinessValidator {
 	}
 	public void AddBusinessRule(IBusinessRules busRule) {
 		businessRules.add(busRule);
+	}
+	public List<IBusinessRules> getBusinessRules() {
+		return businessRules;
 	}
 	public Stock Validate() {
 		for (IBusinessRules iBusinessRules : businessRules) {

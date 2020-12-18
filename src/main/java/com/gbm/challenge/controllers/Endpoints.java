@@ -1,6 +1,8 @@
 
 package com.gbm.challenge.controllers;
 
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.gbm.challenge.domains.GBMOrder;
 import com.gbm.challenge.domains.InvestmentAccount;
 import com.gbm.challenge.domains.Stock;
+import com.gbm.challenge.services.BusinessValidator;
 import com.gbm.challenge.services.InvestmentAccountRespository;
 
 @RestController
@@ -20,6 +23,8 @@ public class Endpoints {
 	
 	@Autowired
 	private InvestmentAccountRespository InvAccountRepository;
+	@Autowired
+	private BusinessValidator validator;
 	
 	@GetMapping(path = "/sayhello")
 	public ResponseEntity<String> sayHello(){
@@ -36,6 +41,7 @@ public class Endpoints {
 	public ResponseEntity<Stock> SendOrder(@PathVariable Long id, @RequestBody GBMOrder gbmOrder){
 		System.out.println(id);
 		System.out.println(gbmOrder);
+		System.out.println(validator.getBusinessRules().size());
 		// validator.addrule(market)
 		// validator.addrule(balance)
 		// validator.addrule(stocks)
@@ -46,9 +52,19 @@ public class Endpoints {
 		// validator[2] ok
 		// validator[3] ok
 		// if one not ok, then return respective invalidation
-		// 
+
 		
-		Stock s = new Stock();
-		return new ResponseEntity<Stock>(s, HttpStatus.OK);
+		Optional<InvestmentAccount> invAccount = InvAccountRepository.findById(id);
+		if(invAccount.isEmpty()) {
+			return new ResponseEntity<Stock>(HttpStatus.NOT_FOUND);
+		}
+		InvestmentAccount account = invAccount.get();
+		Stock stock = new Stock();
+		stock.setCurrentBalance(account);
+		validator.setStock(stock);
+		validator.setOrder(gbmOrder);
+		stock = validator.Validate();
+		
+		return new ResponseEntity<Stock>(stock, HttpStatus.OK);
 	}
 }
