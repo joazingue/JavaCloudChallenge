@@ -1,11 +1,11 @@
 
 package com.gbm.challenge.domains;
 
-import java.sql.Timestamp;
-
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+
+import com.gbm.challenge.services.rules.Operation;
 
 @Entity
 public class GBMOrder {
@@ -14,7 +14,7 @@ public class GBMOrder {
 	@GeneratedValue
 	private Long idOrder;
 	private Long timestamp;
-	private String Operation;
+	private Operation operation;
 	private String IssuerName;
 	private Long TotalShares;
 	private Double SharePrice;
@@ -30,11 +30,11 @@ public class GBMOrder {
 	public void setTimestamp(Long timestamp) {
 		this.timestamp = timestamp;
 	}
-	public String getOperation() {
-		return Operation;
+	public Operation getOperation() {
+		return operation;
 	}
-	public void setOperation(String operation) {
-		Operation = operation;
+	public void setOperation(Operation oper) {
+		operation = oper;
 	}
 	public String getIssuerName() {
 		return IssuerName;
@@ -54,9 +54,12 @@ public class GBMOrder {
 	public void setSharePrice(Double sharePrice) {
 		SharePrice = sharePrice;
 	}
+	public Double getTotalPrice() {
+		return SharePrice * TotalShares;
+	}
 	@Override
 	public String toString() {
-		return "GBMOrder [idOrder=" + idOrder + ", timestamp=" + timestamp + ", Operation=" + Operation
+		return "GBMOrder [idOrder=" + idOrder + ", timestamp=" + timestamp + ", Operation=" + operation
 				+ ", IssuerName=" + IssuerName + ", TotalShares=" + TotalShares + ", SharePrice=" + SharePrice + "]";
 	}
 }

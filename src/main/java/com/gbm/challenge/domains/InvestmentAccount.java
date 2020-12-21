@@ -12,6 +12,9 @@ import javax.persistence.OneToMany;
 
 @Entity
 public class InvestmentAccount {
+	/*
+	 * Individual accounts. Save cash and issuers (Portfolio)
+	 */
 	
 	@Id
 	@GeneratedValue
@@ -38,9 +41,8 @@ public class InvestmentAccount {
 		issuers.add(issu);
 		return issuers;
 	}
-	public List<Issuer> removeIssuer(Issuer issu){
-		issuers.remove(issu.getIdIssuer());
-		return issuers;
+	public void removeAllIssuers() {
+		issuers = new ArrayList<Issuer>();
 	}
 	@Override
 	public String toString() {

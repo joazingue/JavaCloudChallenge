@@ -10,8 +10,14 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.gbm.challenge.services.rules.Validation;
+
 @Entity
-public class Stock {
+public class StockOperation {
+	/*
+	 * This Class validates the Account's current balance and sets business errors
+	 * Can be saved to log the transactions 
+	 */
 
 	@Id
 	@GeneratedValue
@@ -19,9 +25,9 @@ public class Stock {
 	@OneToOne
 	private InvestmentAccount currentBalance;
 	@ElementCollection
-	private List<String> businessErrors = new ArrayList<>();
+	private List<Validation> businessErrors = new ArrayList<>();
 	
-	public Stock() {
+	public StockOperation() {
 	}
 	public InvestmentAccount getCurrentBalance() {
 		return currentBalance;
@@ -29,11 +35,14 @@ public class Stock {
 	public void setCurrentBalance(InvestmentAccount currentBalance) {
 		this.currentBalance = currentBalance;
 	}
-	public List<String> addBusinessError(String be){
+	public List<Validation> addBusinessError(Validation be){
 		businessErrors.add(be);
 		return businessErrors;
 	}
-	public List<String> getBusinessErrors() {
+	public List<Validation> getBusinessErrors() {
 		return businessErrors;
+	}
+	public boolean IsValid() {
+		return businessErrors.isEmpty();
 	}
 }
