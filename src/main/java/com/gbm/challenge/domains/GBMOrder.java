@@ -54,7 +54,7 @@ public class GBMOrder {
 	public void setSharePrice(Double sharePrice) {
 		SharePrice = sharePrice;
 	}
-	public Double getTotalPrice() {
+	public Double getTotalSharesPrice() {
 		return SharePrice * TotalShares;
 	}
 	@Override

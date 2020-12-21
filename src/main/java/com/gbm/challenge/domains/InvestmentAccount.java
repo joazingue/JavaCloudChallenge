@@ -44,6 +44,9 @@ public class InvestmentAccount {
 	public void removeAllIssuers() {
 		issuers = new ArrayList<Issuer>();
 	}
+	public void removeIssuerByIndex(int index) {
+		issuers.remove(index);
+	}
 	@Override
 	public String toString() {
 		return "InvestmentAccount [idInvestmentAccount=" + idInvestmentAccount + ", cash=" + cash + ", issuers="

@@ -22,7 +22,6 @@ public class BusinessValidator {
 	private Validation validation = Validation.INVALID_OPERATION;
 	private List<IBusinessRules> businessRules = new ArrayList<IBusinessRules>();
 	
-	
 	public void setStockOperation(StockOperation stock) {
 		this.stock = stock;
 	}
@@ -36,11 +35,61 @@ public class BusinessValidator {
 		return businessRules;
 	}
 	private void sellOrder() {
-		// TODO
+		// Gets the account to work with
+		InvestmentAccount invAcc = stock.getCurrentBalance();
+		// Gets the cash form the operation
+		Double cash = invAcc.getCash() + order.getTotalSharesPrice();
+		// Sets new balance
+		invAcc.setCash(cash);
+		// Creates a new issuer from the order
+		Issuer issuer = new Issuer();
+		issuer.setIssuerName(order.getIssuerName());
+		issuer.setSharePrice(order.getSharePrice());
+		issuer.setTotalShares(order.getTotalShares());
+		// Search for the issuer in the account list
+		int idx = invAcc.getIssuers().indexOf(issuer);
+		// Gets the actual issuer
+		Issuer oldIssuer = invAcc.getIssuers().get(idx);
+		// substracts from the account the total shares
+		Long totalShares = oldIssuer.getTotalShares() - issuer.getTotalShares();
+		// Removes old issuer
+		invAcc.removeIssuerByIndex(idx);
+		// Sets new shares if needed
+		if(totalShares > 0) {
+			issuer.setTotalShares(totalShares);
+			invAcc.addIssuer(issuer);
+		}
+		// Updates the balance
+		stock.setCurrentBalance(invAcc);
 	}
+	
 	private void buyOrder() {
-		// TODO
+		// Gets the account to work with
+		InvestmentAccount invAcc = stock.getCurrentBalance();
+		// Gets the cash form the operation
+		Double cash = invAcc.getCash() - order.getTotalSharesPrice();
+		// Sets new balance
+		invAcc.setCash(cash);
+		// Creates a new issuer from the order
+		Issuer issuer = new Issuer();
+		issuer.setIssuerName(order.getIssuerName());
+		issuer.setSharePrice(order.getSharePrice());
+		issuer.setTotalShares(order.getTotalShares());
+		// Search for the issuer in the account list
+		int idx = invAcc.getIssuers().indexOf(issuer);
+		// Gets the actual issuer
+		Issuer oldIssuer = invAcc.getIssuers().get(idx);
+		// substracts from the account the total shares
+		Long totalShares = oldIssuer.getTotalShares() + issuer.getTotalShares();
+		// Removes old issuer
+		invAcc.removeIssuerByIndex(idx);
+		// Updates shares
+		issuer.setTotalShares(totalShares);
+		invAcc.addIssuer(issuer);
+		// Updates the balance
+		stock.setCurrentBalance(invAcc);
 	}
+	
 	public StockOperation Validate() {
 		// Validate each business rule
 		for (IBusinessRules iBusinessRules : businessRules) {
@@ -56,34 +105,13 @@ public class BusinessValidator {
 				return stock;
 			}
 		}
-		
+		// Follows the order operation
 		if(order.getOperation().equals(Operation.BUY)) {
 			buyOrder();
 		}
 		if(order.getOperation().equals(Operation.SELL)) {
 			sellOrder();
 		}
-		
-		
-		
-//		InvestmentAccount invAcc = stock.getCurrentBalance();
-//		List<Issuer> listIssuers = invAcc.getIssuers();
-//		if(listIssuers.contains(order.getIssuerName())) {
-//			for (Issuer issuer : ) {
-//				
-//			}
-//		} else {
-//			Issuer newIssuer = new Issuer();
-//			newIssuer.setIssuerName(order.getIssuerName());
-//			newIssuer.setSharePrice(order.getSharePrice());
-//			newIssuer.setTotalShares(order.getTotalShares());
-//			
-//			
-//		}
-		
-		
-		
-		
 		return stock;
 	}
 }

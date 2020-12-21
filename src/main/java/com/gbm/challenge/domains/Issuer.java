@@ -38,5 +38,22 @@ public class Issuer {
 	}
 	public void setSharePrice(Double sharePrice) {
 		SharePrice = sharePrice;
-	}	
+	}
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Issuer other = (Issuer) obj;
+		if (IssuerName == null) {
+			if (other.IssuerName != null)
+				return false;
+		} else if (!IssuerName.equals(other.IssuerName))
+			return false;
+		return true;
+	}
+	
 }
