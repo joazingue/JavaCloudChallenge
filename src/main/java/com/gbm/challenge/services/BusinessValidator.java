@@ -39,7 +39,7 @@ public class BusinessValidator {
 	public List<IBusinessRules> getBusinessRules() {
 		return businessRules;
 	}
-	private InvestmentAccount sellOrder() {
+	private InvestmentAccount sellOrder() throws Exception {
 		// Gets the account to work with
 		InvestmentAccount invAcc = stock.getCurrentBalance();
 		// Gets the cash form the operation
@@ -51,19 +51,26 @@ public class BusinessValidator {
 		issuer.setIssuerName(order.getIssuer_name());
 		issuer.setSharePrice(order.getShare_price());
 		issuer.setTotalShares(order.getTotal_shares());
+		
 		// Search for the issuer in the account list
-		int idx = invAcc.getIssuers().indexOf(issuer);
-		// Gets the actual issuer
-		Issuer oldIssuer = invAcc.getIssuers().get(idx);
-		// substracts from the account the total shares
-		Long totalShares = oldIssuer.getTotalShares() - issuer.getTotalShares();
-		// Removes old issuer
-		invAcc.removeIssuerByIndex(idx);
-		// Sets new shares if needed
-		if(totalShares > 0) {
-			issuerRepository.save(issuer);
-			issuer.setTotalShares(totalShares);
-			invAcc.addIssuer(issuer);
+		// Search for the issuer in the account list
+		Optional<Issuer> exisIssuer = invAcc.getIssuers().stream().filter(ord -> (ord.getIssuerName().equals(issuer.getIssuerName()))).findFirst();
+		if (exisIssuer.isPresent()) {
+			// Gets the actual issuer
+			Issuer oldIssuer = exisIssuer.get();
+			// substracts from the account the total shares
+			Long totalShares = oldIssuer.getTotalShares() - issuer.getTotalShares();
+			// Removes old issuer
+			invAcc.removeIssuer(oldIssuer);
+			if(totalShares > 0) {
+				issuerRepository.save(issuer);
+				issuer.setTotalShares(totalShares);
+				invAcc.addIssuer(issuer);
+			} else {
+				issuerRepository.delete(issuer);
+			}
+		} else {
+			throw new Exception("Order can't sell");
 		}
 		return invAcc;
 	}
@@ -80,7 +87,6 @@ public class BusinessValidator {
 		issuer.setIssuerName(order.getIssuer_name());
 		issuer.setSharePrice(order.getShare_price());
 		issuer.setTotalShares(order.getTotal_shares());
-		
 		// Search for the issuer in the account list
 		Optional<Issuer> exisIssuer = invAcc.getIssuers().stream().filter(ord -> (ord.getIssuerName().equals(issuer.getIssuerName()))).findFirst();
 		if (exisIssuer.isPresent()) {

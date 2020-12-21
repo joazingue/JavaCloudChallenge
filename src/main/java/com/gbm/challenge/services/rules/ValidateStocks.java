@@ -24,8 +24,12 @@ public class ValidateStocks implements IBusinessRules {
 			issuer.setIssuerName(order.getIssuer_name());
 			issuer.setSharePrice(order.getShare_price());
 			issuer.setTotalShares(order.getTotal_shares());
+			
+			
 			// Search for the issuer in the account list
 			int idx = InvAccount.getIssuers().indexOf(issuer);
+			
+			
 			// Gets the actual issuer
 			Issuer oldIssuer = InvAccount.getIssuers().get(idx);
 			// substracts from the account the total shares
