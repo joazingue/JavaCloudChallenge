@@ -2,7 +2,9 @@ package com.gbm.challenge.services;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.gbm.challenge.domains.GBMOrder;
@@ -17,6 +19,9 @@ import com.gbm.challenge.services.rules.Validation;
 @Service
 public class BusinessValidator {
 
+	@Autowired
+	IssuerRepository issuerRepository;
+	
 	private StockOperation stock;
 	private GBMOrder order;
 	private Validation validation = Validation.INVALID_OPERATION;
@@ -34,7 +39,7 @@ public class BusinessValidator {
 	public List<IBusinessRules> getBusinessRules() {
 		return businessRules;
 	}
-	private void sellOrder() {
+	private InvestmentAccount sellOrder() {
 		// Gets the account to work with
 		InvestmentAccount invAcc = stock.getCurrentBalance();
 		// Gets the cash form the operation
@@ -43,9 +48,9 @@ public class BusinessValidator {
 		invAcc.setCash(cash);
 		// Creates a new issuer from the order
 		Issuer issuer = new Issuer();
-		issuer.setIssuerName(order.getIssuerName());
-		issuer.setSharePrice(order.getSharePrice());
-		issuer.setTotalShares(order.getTotalShares());
+		issuer.setIssuerName(order.getIssuer_name());
+		issuer.setSharePrice(order.getShare_price());
+		issuer.setTotalShares(order.getTotal_shares());
 		// Search for the issuer in the account list
 		int idx = invAcc.getIssuers().indexOf(issuer);
 		// Gets the actual issuer
@@ -56,14 +61,14 @@ public class BusinessValidator {
 		invAcc.removeIssuerByIndex(idx);
 		// Sets new shares if needed
 		if(totalShares > 0) {
+			issuerRepository.save(issuer);
 			issuer.setTotalShares(totalShares);
 			invAcc.addIssuer(issuer);
 		}
-		// Updates the balance
-		stock.setCurrentBalance(invAcc);
+		return invAcc;
 	}
 	
-	private void buyOrder() {
+	private InvestmentAccount buyOrder() throws Exception {
 		// Gets the account to work with
 		InvestmentAccount invAcc = stock.getCurrentBalance();
 		// Gets the cash form the operation
@@ -72,29 +77,34 @@ public class BusinessValidator {
 		invAcc.setCash(cash);
 		// Creates a new issuer from the order
 		Issuer issuer = new Issuer();
-		issuer.setIssuerName(order.getIssuerName());
-		issuer.setSharePrice(order.getSharePrice());
-		issuer.setTotalShares(order.getTotalShares());
+		issuer.setIssuerName(order.getIssuer_name());
+		issuer.setSharePrice(order.getShare_price());
+		issuer.setTotalShares(order.getTotal_shares());
+		
 		// Search for the issuer in the account list
-		int idx = invAcc.getIssuers().indexOf(issuer);
-		// Gets the actual issuer
-		Issuer oldIssuer = invAcc.getIssuers().get(idx);
-		// substracts from the account the total shares
-		Long totalShares = oldIssuer.getTotalShares() + issuer.getTotalShares();
-		// Removes old issuer
-		invAcc.removeIssuerByIndex(idx);
-		// Updates shares
-		issuer.setTotalShares(totalShares);
+		Optional<Issuer> exisIssuer = invAcc.getIssuers().stream().filter(ord -> (ord.getIssuerName().equals(issuer.getIssuerName()))).findFirst();
+		if (exisIssuer.isPresent()) {
+			// Gets the actual issuer
+			Issuer oldIssuer = exisIssuer.get();
+			// substracts from the account the total shares
+			Long totalShares = oldIssuer.getTotalShares() + issuer.getTotalShares();
+			// Removes old issuer
+			invAcc.removeIssuer(oldIssuer);
+			// Updates shares
+			issuer.setTotalShares(totalShares);
+		}
+		issuerRepository.save(issuer);
 		invAcc.addIssuer(issuer);
-		// Updates the balance
-		stock.setCurrentBalance(invAcc);
+		return invAcc;
 	}
 	
-	public StockOperation Validate() {
+	public StockOperation Validate() throws Exception {
 		// Validate each business rule
 		for (IBusinessRules iBusinessRules : businessRules) {
 			// Set the GBM order for the rule
 			iBusinessRules.SetOrder(order);
+			// Sets Account
+			iBusinessRules.SetAccount(stock.getCurrentBalance());
 			// Get the validation
 			validation = iBusinessRules.validate();
 			// If validation is not CORRECT, returns bussiness error
@@ -107,10 +117,10 @@ public class BusinessValidator {
 		}
 		// Follows the order operation
 		if(order.getOperation().equals(Operation.BUY)) {
-			buyOrder();
+			stock.setCurrentBalance(buyOrder());
 		}
 		if(order.getOperation().equals(Operation.SELL)) {
-			sellOrder();
+			stock.setCurrentBalance(sellOrder());
 		}
 		return stock;
 	}

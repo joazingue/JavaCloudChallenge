@@ -13,10 +13,17 @@ public class ValidateDuplication implements IBusinessRules {
 		order = validateOrder;
 	}
 
+	/*
+	 * Duplicated operation: No operations for the same amount must happen within a 5 minutes interval, 
+	 * as they are considered duplicates.
+	 */
 	@Override
 	public Validation validate() {
-		System.out.println(order);
-		System.out.println(InvAccount);
+		boolean match = InvAccount.getOrders().stream().anyMatch(ord -> (
+				Math.abs(ord.getTimestamp() - order.getTimestamp()) <= 300000 &
+				ord.getOperation().equals(order.getOperation()) & 
+				ord.getTotalSharesPrice().equals(order.getTotalSharesPrice())));
+		if(match) return Validation.DUPLICATED_OPERATION;
 		return Validation.CORRECT;
 	}
 

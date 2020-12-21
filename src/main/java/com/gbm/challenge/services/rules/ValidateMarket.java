@@ -1,11 +1,13 @@
 
 package com.gbm.challenge.services.rules;
 
+import java.util.Calendar;
+
 import com.gbm.challenge.domains.GBMOrder;
 import com.gbm.challenge.domains.InvestmentAccount;
 
 public class ValidateMarket implements IBusinessRules{
-	// TODO
+	
 	private GBMOrder order;
 	private InvestmentAccount InvAccount;
 	
@@ -14,11 +16,15 @@ public class ValidateMarket implements IBusinessRules{
 		order = validateOrder;
 	}
 
+	/*
+	 * Closed market: All operations must happen between 6am and 3pm.
+	 */
 	@Override
 	public Validation validate() {
-		System.out.println(order);
-		System.out.println(InvAccount);
-		return Validation.CORRECT;
+		Calendar cal = Calendar.getInstance();
+		cal.setTimeInMillis(order.getTimestamp() * 1000);
+		if(cal.get(Calendar.HOUR_OF_DAY) >=6 & cal.get(Calendar.HOUR_OF_DAY) < 15) return Validation.CORRECT;
+		return Validation.CLOSED_MARKET;
 	}
 
 	@Override

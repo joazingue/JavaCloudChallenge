@@ -10,18 +10,22 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class InvestmentAccount {
 	/*
 	 * Individual accounts. Save cash and issuers (Portfolio)
 	 */
-	
 	@Id
 	@GeneratedValue
 	private Long idInvestmentAccount;
 	private Double cash;
 	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
 	private List<Issuer> issuers = new ArrayList<>();
+	@OneToMany(fetch = FetchType.LAZY, orphanRemoval = true)
+	@JsonIgnore
+	private List<GBMOrder> orders = new ArrayList<GBMOrder>();
 	
 	public InvestmentAccount() {
 	}
@@ -46,6 +50,18 @@ public class InvestmentAccount {
 	}
 	public void removeIssuerByIndex(int index) {
 		issuers.remove(index);
+	}
+	public void removeIssuer(Issuer issuer) {
+		issuers.remove(issuer);
+	}
+	public void addOrder(GBMOrder order) {
+		orders.add(order);
+	}
+	/**
+	 * @return the orders
+	 */
+	public List<GBMOrder> getOrders() {
+		return orders;
 	}
 	@Override
 	public String toString() {

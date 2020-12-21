@@ -5,11 +5,14 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 @Entity
 public class Issuer {
 
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private Long idIssuer;
 	private String IssuerName;
 	private Long TotalShares;

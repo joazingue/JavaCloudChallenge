@@ -4,7 +4,7 @@ import com.gbm.challenge.domains.GBMOrder;
 import com.gbm.challenge.domains.InvestmentAccount;
 
 public class ValidateBalance implements IBusinessRules {
-	// TODO
+	
 	private GBMOrder order;
 	private InvestmentAccount InvAccount;
 	
@@ -13,10 +13,15 @@ public class ValidateBalance implements IBusinessRules {
 		order = validateOrder;
 	}
 
+	/*
+	 * Insufficient balance: When buying stocks, you must have enough cash in order to fulfill it.
+	 */
 	@Override
 	public Validation validate() {
-		System.out.println(order);
-		System.out.println(InvAccount);
+		if(order.getOperation().equals(Operation.BUY)) {
+			Double cash = InvAccount.getCash() - order.getTotalSharesPrice();
+			if(cash < 0) return Validation.INSUFFICIENT_BALANCE;
+		}
 		return Validation.CORRECT;
 	}
 
@@ -24,6 +29,4 @@ public class ValidateBalance implements IBusinessRules {
 	public void SetAccount(InvestmentAccount account) {
 		InvAccount = account;
 	}
-
-
 }

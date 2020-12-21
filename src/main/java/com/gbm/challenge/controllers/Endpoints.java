@@ -16,6 +16,7 @@ import com.gbm.challenge.domains.GBMOrder;
 import com.gbm.challenge.domains.InvestmentAccount;
 import com.gbm.challenge.domains.StockOperation;
 import com.gbm.challenge.services.BusinessValidator;
+import com.gbm.challenge.services.GBMOrderRepository;
 import com.gbm.challenge.services.InvestmentAccountRespository;
 
 @RestController
@@ -23,6 +24,8 @@ public class Endpoints {
 	
 	@Autowired
 	private InvestmentAccountRespository InvAccountRepository;
+	@Autowired
+	private GBMOrderRepository gbmOrderRepository;
 	@Autowired
 	private BusinessValidator validator;
 	
@@ -38,22 +41,7 @@ public class Endpoints {
 	}
 	
 	@PostMapping(path="/accounts/{id}/orders")
-	public ResponseEntity<StockOperation> SendOrder(@PathVariable Long id, @RequestBody GBMOrder gbmOrder){
-//		System.out.println(id);
-//		System.out.println(gbmOrder);
-//		System.out.println(validator.getBusinessRules().size());
-		// validator.addrule(market)
-		// validator.addrule(balance)
-		// validator.addrule(stocks)
-		// validator.addrule(duplication)
-		// validator.validate(gbmOrder)
-		// validator[0] ok
-		// validator[1] ok
-		// validator[2] ok
-		// validator[3] ok
-		// if one not ok, then return respective invalidation
-
-		
+	public ResponseEntity<StockOperation> SendOrder(@PathVariable Long id, @RequestBody GBMOrder gbmOrder) throws Exception{
 		// Create a new stock operation
 		StockOperation stock = new StockOperation();
 		// Get the operation account and verify it exists
@@ -70,7 +58,11 @@ public class Endpoints {
 		stock = validator.Validate();
 		// If stock is valid, saves modified account
 		if(stock.IsValid()) {
-			InvAccountRepository.save(stock.getCurrentBalance());
+			// Saves all changes
+			gbmOrderRepository.save(gbmOrder);
+			account = stock.getCurrentBalance();
+			account.addOrder(gbmOrder);
+			InvAccountRepository.save(account);
 		}
 		// Return the operation details
 		return new ResponseEntity<StockOperation>(stock, HttpStatus.OK);

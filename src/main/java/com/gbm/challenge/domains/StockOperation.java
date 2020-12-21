@@ -10,6 +10,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToOne;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gbm.challenge.services.rules.Validation;
 
 @Entity
@@ -21,6 +22,7 @@ public class StockOperation {
 
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private Long idStock;
 	@OneToOne
 	private InvestmentAccount currentBalance;

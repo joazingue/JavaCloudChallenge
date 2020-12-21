@@ -6,7 +6,6 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.gbm.challenge.services.BusinessValidator;
-import com.gbm.challenge.services.rules.IBusinessRules;
 import com.gbm.challenge.services.rules.ValidateBalance;
 import com.gbm.challenge.services.rules.ValidateDuplication;
 import com.gbm.challenge.services.rules.ValidateMarket;
@@ -36,5 +35,4 @@ public class GbmChallengeApplication implements CommandLineRunner {
 		validator.AddBusinessRule(orderRule);
 		validator.AddBusinessRule(stocksRule);
 	}
-
 }

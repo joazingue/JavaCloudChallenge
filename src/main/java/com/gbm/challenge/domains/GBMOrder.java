@@ -5,6 +5,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gbm.challenge.services.rules.Operation;
 
 @Entity
@@ -12,12 +13,13 @@ public class GBMOrder {
 
 	@Id
 	@GeneratedValue
+	@JsonIgnore
 	private Long idOrder;
 	private Long timestamp;
 	private Operation operation;
-	private String IssuerName;
-	private Long TotalShares;
-	private Double SharePrice;
+	private String issuer_name;
+	private Long total_shares;
+	private Double share_price;
 	
 	public GBMOrder() {
 	}
@@ -36,30 +38,48 @@ public class GBMOrder {
 	public void setOperation(Operation oper) {
 		operation = oper;
 	}
-	public String getIssuerName() {
-		return IssuerName;
+	/**
+	 * @return the issuer_name
+	 */
+	public String getIssuer_name() {
+		return issuer_name;
 	}
-	public void setIssuerName(String issuerName) {
-		IssuerName = issuerName;
+	/**
+	 * @param issuer_name the issuer_name to set
+	 */
+	public void setIssuer_name(String issuer_name) {
+		this.issuer_name = issuer_name;
 	}
-	public Long getTotalShares() {
-		return TotalShares;
+	/**
+	 * @return the total_shares
+	 */
+	public Long getTotal_shares() {
+		return total_shares;
 	}
-	public void setTotalShares(Long totalShares) {
-		TotalShares = totalShares;
+	/**
+	 * @param total_shares the total_shares to set
+	 */
+	public void setTotal_shares(Long total_shares) {
+		this.total_shares = total_shares;
 	}
-	public Double getSharePrice() {
-		return SharePrice;
+	/**
+	 * @return the share_price
+	 */
+	public Double getShare_price() {
+		return share_price;
 	}
-	public void setSharePrice(Double sharePrice) {
-		SharePrice = sharePrice;
+	/**
+	 * @param share_price the share_price to set
+	 */
+	public void setShare_price(Double share_price) {
+		this.share_price = share_price;
 	}
 	public Double getTotalSharesPrice() {
-		return SharePrice * TotalShares;
+		return share_price * total_shares;
 	}
 	@Override
 	public String toString() {
 		return "GBMOrder [idOrder=" + idOrder + ", timestamp=" + timestamp + ", Operation=" + operation
-				+ ", IssuerName=" + IssuerName + ", TotalShares=" + TotalShares + ", SharePrice=" + SharePrice + "]";
+				+ ", IssuerName=" + issuer_name + ", TotalShares=" + total_shares + ", SharePrice=" + share_price + "]";
 	}
 }

@@ -14,10 +14,16 @@ public class ValidateOrder implements IBusinessRules{
 		order = validateOrder;
 	}
 
+	/*
+	 * Invalid Operation: Any other invalidity must be prevented.
+	 */
 	@Override
 	public Validation validate() {
-		System.out.println(order);
-		System.out.println(InvAccount);
+		if(order.getIssuer_name() == null) return Validation.INVALID_OPERATION;
+		if(order.getOperation() == null) return Validation.INVALID_OPERATION;
+		if(order.getShare_price() == null) return Validation.INVALID_OPERATION;
+		if(order.getTimestamp() == null) return Validation.INVALID_OPERATION;
+		if(order.getTotal_shares() == null) return Validation.INVALID_OPERATION;
 		return Validation.CORRECT;
 	}
 
