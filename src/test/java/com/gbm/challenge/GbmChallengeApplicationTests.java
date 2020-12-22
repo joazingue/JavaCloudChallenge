@@ -1,3 +1,4 @@
+
 package com.gbm.challenge;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -37,7 +38,7 @@ class GbmChallengeApplicationTests {
 		// Create a investment account
 		JSONObject content = new JSONObject();
 		content.appendField("cash", 1000);
-		
+		// Make request
 		MvcResult mockRequest = mockMvc
 				.perform(post(POSTcreateAccount)
 						.contentType("application/json")

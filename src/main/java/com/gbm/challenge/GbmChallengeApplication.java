@@ -1,5 +1,7 @@
 package com.gbm.challenge;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -15,6 +17,8 @@ import com.gbm.challenge.services.rules.ValidateStocks;
 @SpringBootApplication
 public class GbmChallengeApplication implements CommandLineRunner {
 
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private BusinessValidator validator;
 	
@@ -22,6 +26,11 @@ public class GbmChallengeApplication implements CommandLineRunner {
 		SpringApplication.run(GbmChallengeApplication.class, args);
 	}
 	
+	/**
+	 * Starts the validator and adds the business rules
+	 * @param args Unused.
+	 * @return Nothing.
+	 */
 	@Override
 	public void run(String... args) throws Exception {
 		ValidateBalance balanceRule = new ValidateBalance();
@@ -34,5 +43,6 @@ public class GbmChallengeApplication implements CommandLineRunner {
 		validator.AddBusinessRule(marketRule);
 		validator.AddBusinessRule(orderRule);
 		validator.AddBusinessRule(stocksRule);
+		logger.info("Busines rules added: " + validator.getBusinessRules().size());
 	}
 }

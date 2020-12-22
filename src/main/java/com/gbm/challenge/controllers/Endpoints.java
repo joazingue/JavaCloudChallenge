@@ -3,6 +3,10 @@ package com.gbm.challenge.controllers;
 
 import java.util.Optional;
 
+import javax.servlet.http.HttpServletRequest;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -22,6 +26,8 @@ import com.gbm.challenge.services.InvestmentAccountRespository;
 @RestController
 public class Endpoints {
 	
+	private Logger logger = LoggerFactory.getLogger(this.getClass());
+	
 	@Autowired
 	private InvestmentAccountRespository InvAccountRepository;
 	@Autowired
@@ -29,17 +35,33 @@ public class Endpoints {
 	@Autowired
 	private BusinessValidator validator;
 	
+	/**
+	 * This is a 'Hello world' endpoint to look if service is alive.
+	 * @return String "Hello from GBM Challenge".
+	 */
 	@GetMapping(path = "/sayhello")
-	public ResponseEntity<String> sayHello(){
+	public ResponseEntity<String> sayHello(HttpServletRequest request){
+		logger.info("Hello to " + request.getLocalAddr());
 		return new ResponseEntity<String>("Hello from GBM challenge!", HttpStatus.OK);
 	}
 	
+	/**
+	 * Endpoint to create new accounts
+	 * @param ia receives json with starting cash only
+	 * @return returns json with the new account details
+	 */
 	@PostMapping(path = "/accounts")
 	public ResponseEntity<InvestmentAccount> createAccount(@RequestBody InvestmentAccount ia){
 		InvestmentAccount savedIA = InvAccountRepository.save(ia);
 		return new ResponseEntity<InvestmentAccount>(savedIA, HttpStatus.CREATED);
 	}
 	
+	/**
+	 * Send orders endpoint
+	 * @param id path params that specifies the account making the order
+	 * @param gbmOrder body specifies the order details
+	 * @return stock details with current account balance or the business errors
+	 */
 	@PostMapping(path="/accounts/{id}/orders")
 	public ResponseEntity<StockOperation> SendOrder(@PathVariable Long id, @RequestBody GBMOrder gbmOrder) throws Exception{
 		// Create a new stock operation
