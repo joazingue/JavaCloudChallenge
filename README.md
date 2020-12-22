@@ -16,3 +16,7 @@ java -jar target/challenge-0.0.1-SNAPSHOT.jar
 docker build --build-arg JAR_FILE=target/*.jar -t gbm_challenge .
 docker run -p 2811:2811 --name challenge gbm_challenge
 ```
+
+### AWS Elastic Beanstalk
+
+builspec.yml file ready to upload to codebuild and pipeline
