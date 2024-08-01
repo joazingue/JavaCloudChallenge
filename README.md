@@ -1,6 +1,6 @@
-# GBM Challenge
+# Java Cloud Challenge
 
-Code solution for the GBM Challenge. Made with Java Springboot, h2 database and docker.
+Code solution for the Java Cloud Challenge. Made with Java Springboot, h2 database and docker.
 
 ## Installation
 Created using [Spring Initializr](https://start.spring.io/). Maven pom installs dependencies
